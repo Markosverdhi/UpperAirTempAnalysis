@@ -22,8 +22,9 @@ for col in stratosphere.iter_rows(min_row=2, max_col=7, max_row=519, values_only
     stratoArr.append(col)
 
 #modified binary search method for openpyxl
-def findInterval(arr, startMonth, startYear, endMonth, endYear, r=len(arr), l=0):
+def findInterval(arr, startMonth, startYear, endMonth, endYear, l=0):
     returns = []
+    r=len(arr)
     while r-l > 1:
         middle = (l+(r-l))//2
         if arr[middle][0] == startYear:
