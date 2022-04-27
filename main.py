@@ -50,7 +50,7 @@ def findInterval(arr, startMonth, startYear, endMonth, endYear, r=None, l=0):
             return None
 
 # method for graphing data
-def graph(arr, startMonth, startYear, endMonth, endYear):
+def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     #searches for start and end index
     i = findInterval(arr, startMonth, startYear, endMonth, endYear)
     fig, ax = plt.subplots()
@@ -63,27 +63,30 @@ def graph(arr, startMonth, startYear, endMonth, endYear):
     xfall = []
     yfall = []
 
-    for entry in arr[i[0]:i[1]]:
-        if entry[1] == (12 or 1 or 2):
-            ywinter.append(entry[2])
-            xwinter.append(entry[0])
-        elif entry[1] == (3 or 4 or 5):
-            yspring.append(entry[2])
-            xspring.append(entry[0])
-        elif entry[1] == (6 or 7 or 8):
-            ysummer.append(entry[2])
-            xsummer.append(entry[0])
-        elif entry[1] == (9 or 10 or 11):
-            yfall.append(entry[2])
-            xfall.append(entry[0])
+    for entry in range(i[0],i[1]):
+        if arr[entry][1] == (12 or 1 or 2):
+            ywinter.append(arr[entry][hemi])
+            xwinter.append(arr[entry][0])
+        elif arr[entry][1] == (3 or 4 or 5):
+            yspring.append(arr[entry][hemi])
+            xspring.append(arr[entry][0])
+        elif arr[entry][1] == (6 or 7 or 8):
+            ysummer.append(arr[entry][hemi])
+            xsummer.append(arr[entry][0])
+        elif arr[entry][1] == (9 or 10 or 11):
+            yfall.append(arr[entry][hemi])
+            xfall.append(arr[entry][0])
 
-    ax.plot(xsummer, ysummer, color = 'red')
-    ax.plot(xwinter, ywinter, color = 'blue')
-    ax.plot(xspring, yspring, color = 'cyan')
-    ax.plot(xfall, yfall, color = 'orange')
+    ax.plot(xsummer, ysummer, color = 'gold')
+    ax.plot(xwinter, ywinter, color = 'lightskyblue')
+    ax.plot(xspring, yspring, color = 'palegreen')
+    ax.plot(xfall, yfall, color = 'chocolate')
+    plt.legend(['Summer', 'Winter', 'Spring', 'Fall'])
     ax.set(xlabel = "year",
            ylabel = 'temp anomaly')
+    ax.set_xlim(startYear, endYear)
+
     plt.show()
 
 
-graph(tropoArr, 1, 1988, 4, 1989)
+graphBySeason(tropoArr, 11, 1978, 4, 1989, 2)
