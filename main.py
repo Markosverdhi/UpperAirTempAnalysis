@@ -53,7 +53,12 @@ def findInterval(arr, startMonth, startYear, endMonth, endYear, r=None, l=0):
 def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     #searches for start and end index
     i = findInterval(arr, startMonth, startYear, endMonth, endYear)
-    fig, ax = plt.subplots()
+    #create the space for the plots
+    fig, ax = plt.subplots(2,2)
+    fig.set_figwidth(9)
+    fig.set_figheight(9)
+
+
     #creating cleaned lists for plotting
     xsummer = []
     ysummer = []
@@ -66,33 +71,38 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     for entry in range(i[0],i[1]):
         if arr[entry][1] in {12, 1, 2}:
             ywinter.append(arr[entry][hemi])
-            xwinter.append(f'{arr[entry][1]}/{arr[entry][0]}')
+            xwinter.append(mdates.datestr2num(f'{arr[entry][1]}/{arr[entry][0]}'))
         elif arr[entry][1] in {3, 4, 5}:
             yspring.append(arr[entry][hemi])
-            xspring.append(f'{arr[entry][1]}/{arr[entry][0]}')
+            xspring.append(mdates.datestr2num(f'{arr[entry][1]}/{arr[entry][0]}'))
         elif arr[entry][1] in {6,7,8}:
             ysummer.append(arr[entry][hemi])
-            xsummer.append(f'{arr[entry][1]}/{arr[entry][0]}')
+            xsummer.append(mdates.datestr2num(f'{arr[entry][1]}/{arr[entry][0]}'))
         elif arr[entry][1] in {9, 10, 11}:
             yfall.append(arr[entry][hemi])
-            xfall.append(f'{arr[entry][1]}/{arr[entry][0]}')
+            xfall.append(mdates.datestr2num(f'{arr[entry][1]}/{arr[entry][0]}'))
 
     #creating plots
-    ax.plot(xwinter, ywinter, color = 'lightskyblue')
-    ax.plot(xspring, yspring, color = 'palegreen')
-    ax.plot(xsummer, ysummer, color = 'gold')
-    ax.plot(xfall, yfall, color = 'chocolate')
-    plt.legend(['Winter','Spring','Summer', 'Fall'])
-    ax.set(xlabel = "year",
-           ylabel = 'temp anomaly')
-    #YYYY/m formatting
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b/%Y'))
-    #set ticks for xaxis
-    ax.xaxis.set_major_locator(mdates.MonthLocator())
-    ax.xaxis.set_minor_locator(mdates.MonthLocator())
-    #rotation of labels
-    for label in ax.get_xticklabels(which = 'major'):
-        label.set(rotation=45, horizontalalignment='right')
+    ax[0][0].scatter(xwinter, ywinter, color = 'lightskyblue')
+    ax[0][0].set_title('Winter')
+    ax[0][1].scatter(xspring, yspring, color = 'palegreen')
+    ax[0][1].set_title('Spring')
+    ax[1][0].scatter(xsummer, ysummer, color = 'gold')
+    ax[1][0].set_title('Summer')
+    ax[1][1].scatter(xfall, yfall, color = 'chocolate')
+    ax[1][1].set_title('Fall')
+
+    for i in range(2):
+        for j in range(2):
+            ax[i][j].set(ylabel = 'temp anomaly')
+            #YYYY/m formatting
+            ax[i][j].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+            #set ticks for xaxis
+            ax[i][j].xaxis.set_major_locator(mdates.MonthLocator(1,7))
+            ax[i][j].xaxis.set_minor_locator(mdates.MonthLocator())
+        #rotation of labels
+            for label in ax[i][j].get_xticklabels(which = 'major'):
+                label.set(rotation=45, horizontalalignment='right')
 
     plt.show()
     # print(yfall)
