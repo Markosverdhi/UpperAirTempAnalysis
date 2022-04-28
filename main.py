@@ -1,7 +1,7 @@
 
 from openpyxl import load_workbook
 import numpy as np
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt, dates as mdates
 import pandas as pd
 import tkinter as tk
 import statistics as s
@@ -54,6 +54,7 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     #searches for start and end index
     i = findInterval(arr, startMonth, startYear, endMonth, endYear)
     fig, ax = plt.subplots()
+    #creating cleaned lists for plotting
     xsummer = []
     ysummer = []
     xwinter = []
@@ -62,31 +63,40 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     yspring = []
     xfall = []
     yfall = []
-
     for entry in range(i[0],i[1]):
-        if arr[entry][1] == (12 or 1 or 2):
+        if arr[entry][1] in {12, 1, 2}:
             ywinter.append(arr[entry][hemi])
-            xwinter.append(arr[entry][0])
-        elif arr[entry][1] == (3 or 4 or 5):
+            xwinter.append(f'{arr[entry][1]}/{arr[entry][0]}')
+        elif arr[entry][1] in {3, 4, 5}:
             yspring.append(arr[entry][hemi])
-            xspring.append(arr[entry][0])
-        elif arr[entry][1] == (6 or 7 or 8):
+            xspring.append(f'{arr[entry][1]}/{arr[entry][0]}')
+        elif arr[entry][1] in {6,7,8}:
             ysummer.append(arr[entry][hemi])
-            xsummer.append(arr[entry][0])
-        elif arr[entry][1] == (9 or 10 or 11):
+            xsummer.append(f'{arr[entry][1]}/{arr[entry][0]}')
+        elif arr[entry][1] in {9, 10, 11}:
             yfall.append(arr[entry][hemi])
-            xfall.append(arr[entry][0])
+            xfall.append(f'{arr[entry][1]}/{arr[entry][0]}')
 
-    ax.plot(xsummer, ysummer, color = 'gold')
+    #creating plots
     ax.plot(xwinter, ywinter, color = 'lightskyblue')
     ax.plot(xspring, yspring, color = 'palegreen')
+    ax.plot(xsummer, ysummer, color = 'gold')
     ax.plot(xfall, yfall, color = 'chocolate')
-    plt.legend(['Summer', 'Winter', 'Spring', 'Fall'])
+    plt.legend(['Winter','Spring','Summer', 'Fall'])
     ax.set(xlabel = "year",
            ylabel = 'temp anomaly')
-    ax.set_xlim(startYear, endYear)
+    #YYYY/m formatting
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b/%Y'))
+    #set ticks for xaxis
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_minor_locator(mdates.MonthLocator())
+    #rotation of labels
+    for label in ax.get_xticklabels(which = 'major'):
+        label.set(rotation=45, horizontalalignment='right')
 
     plt.show()
+    # print(yfall)
+    # print(xfall)
 
 def fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi):
     i = findInterval(arr, startMonth, startYear, endMonth, endYear)
@@ -111,4 +121,4 @@ def boxPlot(arr, startMonth, startYear, endMonth, endYear, hemi):
     plt.show()
 
 
-boxPlot(tropoArr,1,1988,5,1990,2)
+graphBySeason(tropoArr,1,1980,6,1990,2)
