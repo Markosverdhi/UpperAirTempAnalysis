@@ -1,11 +1,13 @@
-
 from openpyxl import load_workbook
 import numpy as np
 from matplotlib import pyplot as plt, dates as mdates
 import pandas as pd
 import tkinter as tk
+from tkinter import *
+from tkinter import ttk, Button
 import statistics as s
 
+#Developed by Justin Ngo, Markos Verdhi
 
 #read spreadsheets and workbook
 wb = load_workbook('Upper_Air_temps_data.xlsx')
@@ -58,7 +60,6 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     fig.set_figwidth(9)
     fig.set_figheight(9)
 
-
     #creating cleaned lists for plotting
     xsummer = []
     ysummer = []
@@ -105,8 +106,6 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
                 label.set(rotation=45, horizontalalignment='right')
 
     plt.show()
-    # print(yfall)
-    # print(xfall)
 
 def fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi):
     i = findInterval(arr, startMonth, startYear, endMonth, endYear)
@@ -120,9 +119,6 @@ def fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi):
     for i in range(3) : returns.insert(-1,float(format(s.quantiles(cData, n=4)[i-1], '.3f')))
     return returns
 
-    # print(returns)
-
-
 def boxPlot(arr, startMonth, startYear, endMonth, endYear, hemi):
     fns = fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi)
     box = plt.figure()
@@ -130,5 +126,88 @@ def boxPlot(arr, startMonth, startYear, endMonth, endYear, hemi):
     p = ax.boxplot(fns)
     plt.show()
 
+# graphBySeason(tropoArr,1,1980,6,1990,2)
 
-graphBySeason(tropoArr,1,1980,6,1990,2)
+#Tkinter Bullshit
+
+#init the GUI
+root = tk.Tk()
+root.title("Fuckin Retard")
+root.geometry( "1050x200" )
+
+#define dropdown menu values
+Months = ["select Month", "January", "February", "March", "April", "May", "June",
+               "July", "August", "September", "October", "November", "December"]
+Years = ["Select Year", 1978, 1979,
+              1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989,
+              1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
+              2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+              2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+              2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019,
+              2020, 2021]
+
+anomaly_Type = ["Select Anomaly", "Global Average", "Northern Hemisphere",
+                "Southern Hemisphere", "Global Land", "Global Ocean"]
+altitude = ["Select Region", "Troposphere","Stratosphere"]
+chart_Type = ["Select Graph Type", "Scatter Plot", "Box and Whisker", "Sum Shit"]
+
+#method for running code once user inputs variables
+def runShit():
+    #make sure the code doesn't shit itself if the user fails to choose an option
+    if sStart_Month.current() == 0 and sStart_Year.current() == 0 and sEnd_Year.current() == 0 and \
+            sEnd_Month.current() == 0 and sAnomaly.current() == 0 and sAlti.current() == 0 and sChart.current() == 0:
+        print("Wow you must be a special kind of retard you actually managed to --somehow-- leave every field blank")
+    elif sStart_Month.current() == 0 or sStart_Year.current() == 0 or sEnd_Year.current() == 0 or \
+            sEnd_Month.current() == 0 or sAnomaly.current() == 0 or sAlti.current() == 0 or sChart.current() == 0:
+        print("You dun goofed up mufuker, you left a field blank")
+    else:
+        #decision tree --
+        #determine which chart user wants
+            #determine which array to read
+        if sChart.current() == 1:
+            if sAlti.current() == 1:
+                graphBySeason(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), sAnomaly.current())
+            else:
+                graphBySeason(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), sAnomaly.current())
+        elif sChart.current() == 2:
+            if sAlti.current() == 1:
+                boxPlot(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), sAnomaly.current())
+            else:
+                boxPlot(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), sAnomaly.current())
+        else:
+            print("something got fucked, shouldn't have made it this far")
+
+#create a run button
+run = tk.Button(root, command = runShit, width = 15, activeforeground= "green", activebackground= "green", text = "RUN")
+run.pack()
+
+#make the dropdown menus
+sStart_Month = ttk.Combobox(root, value = Months)
+sStart_Month.current(0)
+sStart_Month.pack(padx=5, pady=10, side=tk.LEFT)
+
+sStart_Year = ttk.Combobox(root,value = Years)
+sStart_Year.current(0)
+sStart_Year.pack(padx=5, pady=10, side=tk.LEFT)
+
+sEnd_Month = ttk.Combobox(root,value = Months)
+sEnd_Month.current(0)
+sEnd_Month.pack(padx=5, pady=10, side=tk.LEFT)
+
+sEnd_Year = ttk.Combobox(root,value = Years)
+sEnd_Year.current(0)
+sEnd_Year.pack(padx=5, pady=10, side=tk.LEFT)
+
+sAnomaly = ttk.Combobox(root,value = anomaly_Type)
+sAnomaly.current(0)
+sAnomaly.pack(padx=5, pady=10, side=tk.LEFT)
+
+sAlti = ttk.Combobox(root, value = altitude)
+sAlti.current(0)
+sAlti.pack(padx=5, pady=10, side=tk.LEFT)
+
+sChart = ttk.Combobox(root, value = chart_Type)
+sChart.current(0)
+sChart.pack(padx=5, pady=10, side=tk.LEFT)
+
+root.mainloop()
