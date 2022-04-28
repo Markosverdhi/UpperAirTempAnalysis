@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import pandas as pd
 import tkinter as tk
-import math
+import statistics as s
 
 
 #read spreadsheets and workbook
@@ -88,5 +88,27 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
 
     plt.show()
 
+def fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi):
+    i = findInterval(arr, startMonth, startYear, endMonth, endYear)
+    cData = []
+    for entry in range(i[0],i[1]):
+        cData.append(arr[entry][hemi])
 
-graphBySeason(tropoArr, 11, 1978, 4, 1989, 2)
+    minimum = min(cData)
+    maximum = max(cData)
+    returns = [minimum, maximum]
+    for i in range(3) : returns.insert(-1,float(format(s.quantiles(cData, n=4)[i-1], '.3f')))
+    return returns
+
+    # print(returns)
+
+
+def boxPlot(arr, startMonth, startYear, endMonth, endYear, hemi):
+    fns = fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi)
+    box = plt.figure()
+    ax = box.add_axes([0,0,1,1])
+    p = ax.boxplot(fns)
+    plt.show()
+
+
+boxPlot(tropoArr,1,1988,5,1990,2)
