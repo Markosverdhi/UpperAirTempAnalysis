@@ -64,17 +64,12 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     i = findInterval(arr, startMonth, startYear, endMonth, endYear)
     #create the space for the plots
     fig, ax = plt.subplots(2,2)
-<<<<<<< HEAD
     if i[1]-i[0] > 180:
         fig.set_figwidth(12)
         fig.set_figheight(7)
     else:
         fig.set_figwidth(9)
         fig.set_figheight(9)
-=======
-    fig.set_figwidth(9)
-    fig.set_figheight(9)
->>>>>>> 7485ef463db299855c5271c13f67a5ed526ce942
 
     #creating cleaned lists for plotting
     xsummer = []
@@ -140,20 +135,14 @@ def fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi):
 
 def boxPlot(arr, startMonth, startYear, endMonth, endYear, hemi):
     fns = fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi)
-    box = plt.figure()
-    ax = box.add_axes([0,0,1,1])
-    p = ax.boxplot(fns)
+    box = plt.figure(figsize = (10, 7))
+    ax = box.add_axes([0.1,0.1,0.8,0.8])
+    plt.yticks(color='white')
+    ax.boxplot(fns, vert=False)
     plt.show()
 
-<<<<<<< HEAD
 #Tkinter
 
-=======
-# graphBySeason(tropoArr,1,1980,6,1990,2)
-
-#Tkinter Bullshit
-
->>>>>>> 7485ef463db299855c5271c13f67a5ed526ce942
 #init the GUI
 root = tk.Tk()
 root.title("Fuckin Retard")
@@ -161,12 +150,8 @@ root.geometry( "1050x200" )
 
 #define dropdown menu values
 Months = ["select Month", "January", "February", "March", "April", "May", "June",
-<<<<<<< HEAD
                    "July", "August", "September", "October", "November", "December"]
 
-=======
-               "July", "August", "September", "October", "November", "December"]
->>>>>>> 7485ef463db299855c5271c13f67a5ed526ce942
 Years = ["Select Year", 1978, 1979,
               1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989,
               1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
@@ -177,7 +162,6 @@ Years = ["Select Year", 1978, 1979,
 
 anomaly_Type = ["Select Anomaly", "Global Average", "Northern Hemisphere",
                 "Southern Hemisphere", "Global Land", "Global Ocean"]
-<<<<<<< HEAD
 
 altitude = ["Select Region", "Troposphere","Stratosphere"]
 
@@ -189,17 +173,6 @@ def runShit():
     if sStart_Month.current() == 0 and sStart_Year.current() == 0 and sEnd_Year.current() == 0 and \
             sEnd_Month.current() == 0 and sAnomaly.current() == 0 and sAlti.current() == 0 and sChart.current() == 0:
         print("Wow you must be a special kind of idiot, you actually managed to --somehow-- leave every field blank")
-=======
-altitude = ["Select Region", "Troposphere","Stratosphere"]
-chart_Type = ["Select Graph Type", "Scatter Plot", "Box and Whisker", "Sum Shit"]
-
-#method for running code once user inputs variables
-def runShit():
-    #make sure the code doesn't shit itself if the user fails to choose an option
-    if sStart_Month.current() == 0 and sStart_Year.current() == 0 and sEnd_Year.current() == 0 and \
-            sEnd_Month.current() == 0 and sAnomaly.current() == 0 and sAlti.current() == 0 and sChart.current() == 0:
-        print("Wow you must be a special kind of retard you actually managed to --somehow-- leave every field blank")
->>>>>>> 7485ef463db299855c5271c13f67a5ed526ce942
     elif sStart_Month.current() == 0 or sStart_Year.current() == 0 or sEnd_Year.current() == 0 or \
             sEnd_Month.current() == 0 or sAnomaly.current() == 0 or sAlti.current() == 0 or sChart.current() == 0:
         print("You dun goofed up mufuker, you left a field blank")
@@ -209,7 +182,6 @@ def runShit():
             #determine which array to read
         if sChart.current() == 1:
             if sAlti.current() == 1:
-<<<<<<< HEAD
                 graphBySeason(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current()+1))
             else:
                 graphBySeason(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current()+1))
@@ -218,16 +190,6 @@ def runShit():
                 boxPlot(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current() + 1))
             else:
                 boxPlot(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current() + 1))
-=======
-                graphBySeason(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), sAnomaly.current())
-            else:
-                graphBySeason(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), sAnomaly.current())
-        elif sChart.current() == 2:
-            if sAlti.current() == 1:
-                boxPlot(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), sAnomaly.current())
-            else:
-                boxPlot(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), sAnomaly.current())
->>>>>>> 7485ef463db299855c5271c13f67a5ed526ce942
         else:
             print("something got fucked, shouldn't have made it this far")
 
