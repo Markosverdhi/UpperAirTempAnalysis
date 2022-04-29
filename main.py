@@ -178,6 +178,16 @@ def runShit():
         message.set("Ay yo, tou dun goofed up fam, you left a field blank, fill everything out before you click RUN")
     elif (int(sStart_Year.get()) == 1978) and sStart_Month.current() < 11:
         message.set("The month you selected is not found in this year please start at November or December")
+    elif (int(sStart_Year.get())) > int(sEnd_Year.get()):
+        message.set("OI! Stop that, no time travel allowed, your start year should be before the end year!")
+
+    #failed error code, not comparing the start and end months properly 
+    # elif ((int(sStart_Year.get())) == int(sEnd_Year.get())):
+    #     if (sStart_Month.current() < sEnd_Month.current()):
+    #         print(sStart_Month.current() + sEnd_Month.current())
+    #         message.set("OI! Stop that, no time travel allowed, your start month should be before the end month!")
+    #     else:
+    #         print("shouldn't make it here")
     else:
         if sChart.current() == 1:
             if sAlti.current() == 1:
@@ -190,7 +200,8 @@ def runShit():
             else:
                 boxPlot(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current() + 1))
         else:
-            print("something got fucked, shouldn't have made it this far")
+            message.set("Something just shit itself, you just found a new bug, please go to the gitHub and alert the devs, "
+                        "https://github.com/Markosverdhi/UpperAirTempAnalysis")
 
 #create a run button
 run = tk.Button(root, command = runShit, width = 15, activeforeground= "green", activebackground= "green", text = "RUN")
