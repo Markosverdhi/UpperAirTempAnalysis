@@ -1,5 +1,6 @@
 # UpperAirTempAnalysis
 Justin Ngo, Markos Verdhi
+
 Analyze historical data of stratospheric and mid-tropospheric temperature deviations from the monthly average
 
 General information
@@ -11,5 +12,7 @@ How to run:
 5. If interested in reading the code, notes should provide enough idea to figure out what each method does 
 
 Language: Python 3
+
 OS: Windows, Linux, Mac (compatible with all OS)
+
 May need to install openpyxl, matplotlib, tkinter, and/or statistics
