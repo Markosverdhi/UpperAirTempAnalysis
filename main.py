@@ -36,10 +36,7 @@ def findInterval(arr, startMonth, startYear, endMonth, endYear, r=None, l=0):
                 returns.append(middle + 2)
             elif startMonth != l:
                 diff = startMonth - arr[middle][1]
-                if startYear == arr[0][0] and startMonth == arr[0][1]:
-                    startIndex = (middle + diff)
-                else:
-                    startIndex = (middle + diff + 2)
+                startIndex = (middle + diff)
                 returns.append(startIndex)
             monthdiff = endMonth - startMonth
             yeardiff = endYear - startYear
@@ -99,13 +96,13 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
 
     #creating plots
     ax[0][0].scatter(xwinter, ywinter, color = 'lightskyblue')
-    ax[0][0].set_title('Winter')
+    ax[0][0].set_title('Winter', x=0.9, y=0.9)
     ax[0][1].scatter(xspring, yspring, color = 'palegreen')
-    ax[0][1].set_title('Spring')
+    ax[0][1].set_title('Spring', x=0.9, y=0.9)
     ax[1][0].scatter(xsummer, ysummer, color = 'gold')
-    ax[1][0].set_title('Summer')
+    ax[1][0].set_title('Summer', x=0.9, y=0.9)
     ax[1][1].scatter(xfall, yfall, color = 'chocolate')
-    ax[1][1].set_title('Fall')
+    ax[1][1].set_title('Fall', x=0.9, y=0.9)
 
     for i in range(2):
         for j in range(2):
@@ -116,9 +113,12 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
             ax[i][j].xaxis.set_major_locator(mdates.YearLocator())
             ax[i][j].xaxis.set_minor_locator(mdates.MonthLocator())
         #rotation of labels
+            if len(xwinter) > 45:
+                for label in ax[i][j].get_xticklabels(which = 'major')[::2]:
+                    label.set_visible(False)
+
             for label in ax[i][j].get_xticklabels(which = 'major'):
                 label.set(rotation=45, horizontalalignment='right')
-
     plt.show()
 
 def fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi):
@@ -226,7 +226,3 @@ sChart.current(0)
 sChart.pack(padx=5, pady=10, side=tk.LEFT)
 
 root.mainloop()
-
-# graphBySeason(tropoArr,11,1978,12,2021,2)
-#One problem is that our database starts at 11.1978, not 1.1978, so we have to fix the GUI to not allow you to choose 1-10.1978
-#Another issue is that we aren't calling the function graphBySeason() properly when we are calling the anomaly "Global Average."
