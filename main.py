@@ -7,7 +7,7 @@ from tkinter import *
 from tkinter import ttk, Button
 import statistics as s
 
-#Developed by Justin Ngo, Markos Verdhi
+#Developed by Justin Ngo, Markos Verdhi PSU CSC132
 
 #read spreadsheets and workbook
 wb = load_workbook('Upper_Air_temps_data.xlsx')
@@ -171,15 +171,14 @@ chart_Type = ["Select Graph Type", "Scatter Plot", "Box and Whisker"]
 def runShit():
     #exception handling
     if sStart_Month.current() == 0 and sStart_Year.current() == 0 and sEnd_Year.current() == 0 and \
-            sEnd_Month.current() == 0 and sAnomaly.current() == 0 and sAlti.current() == 0 and sChart.current() == 0:
-        print("Wow you must be a special kind of idiot, you actually managed to --somehow-- leave every field blank")
+    sEnd_Month.current() == 0 and sAnomaly.current() == 0 and sAlti.current() == 0 and sChart.current() == 0:
+        message.set("Wow you must be a special kind of idiot, you actually managed to --somehow-- leave every field blank")
     elif sStart_Month.current() == 0 or sStart_Year.current() == 0 or sEnd_Year.current() == 0 or \
-            sEnd_Month.current() == 0 or sAnomaly.current() == 0 or sAlti.current() == 0 or sChart.current() == 0:
-        print("You dun goofed up mufuker, you left a field blank")
+    sEnd_Month.current() == 0 or sAnomaly.current() == 0 or sAlti.current() == 0 or sChart.current() == 0:
+        message.set("Ay yo, tou dun goofed up fam, you left a field blank, fill everything out before you click RUN")
+    elif (int(sStart_Year.get()) == 1978) and sStart_Month.current() < 11:
+        message.set("The month you selected is not found in this year please start at November or December")
     else:
-        #decision tree --
-        #determine which chart user wants
-            #determine which array to read
         if sChart.current() == 1:
             if sAlti.current() == 1:
                 graphBySeason(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current()+1))
@@ -196,6 +195,12 @@ def runShit():
 #create a run button
 run = tk.Button(root, command = runShit, width = 15, activeforeground= "green", activebackground= "green", text = "RUN")
 run.pack()
+
+message = StringVar()
+message.set("Error messages will show here (if any)")
+
+label = Label(root, textvariable = message)
+label.pack()
 
 #make the dropdown menus
 sStart_Month = ttk.Combobox(root, value = Months)
