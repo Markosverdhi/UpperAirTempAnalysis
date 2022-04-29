@@ -1,11 +1,13 @@
-
 from openpyxl import load_workbook
 import numpy as np
-from matplotlib import pyplot as plt, dates as mdates
+from matplotlib import pyplot as plt, dates as mdates, ticker as tick
 import pandas as pd
 import tkinter as tk
+from tkinter import *
+from tkinter import ttk, Button
 import statistics as s
 
+#Developed by Justin Ngo, Markos Verdhi
 
 #read spreadsheets and workbook
 wb = load_workbook('Upper_Air_temps_data.xlsx')
@@ -34,19 +36,29 @@ def findInterval(arr, startMonth, startYear, endMonth, endYear, r=None, l=0):
                 returns.append(middle + 2)
             elif startMonth != l:
                 diff = startMonth - arr[middle][1]
-                returns.append(middle + diff + 2)
+                if startYear == arr[0][0] and startMonth == arr[0][1]:
+                    startIndex = (middle + diff)
+                else:
+                    startIndex = (middle + diff + 2)
+                returns.append(startIndex)
             monthdiff = endMonth - startMonth
             yeardiff = endYear - startYear
             endIndex = returns[0] + (12*yeardiff + monthdiff)
-            returns.append(endIndex)
-            return returns
+            if endIndex == len(arr):
+                returns.append(endIndex-2)
+            else:
+                returns.append(endIndex)
+            if returns[0] < 0 or returns[1] < 0:
+                print('one or more entries in specified range do not exist in the data.')
+            else:
+                return returns
 
         elif arr[middle][0] > startYear:
             return findInterval(arr, startMonth, startYear, endMonth, endYear, middle, l)
         elif arr[middle][0] < startYear:
             return findInterval(arr, startMonth, startYear, endMonth, endYear, r, middle)
         else:
-            print('one or more entries in specified range do not exist in the data')
+            print('one or more entries in specified range do not exist in the data.')
             return None
 
 # method for graphing data
@@ -55,9 +67,12 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     i = findInterval(arr, startMonth, startYear, endMonth, endYear)
     #create the space for the plots
     fig, ax = plt.subplots(2,2)
-    fig.set_figwidth(9)
-    fig.set_figheight(9)
-
+    if i[1]-i[0] > 180:
+        fig.set_figwidth(12)
+        fig.set_figheight(7)
+    else:
+        fig.set_figwidth(9)
+        fig.set_figheight(9)
 
     #creating cleaned lists for plotting
     xsummer = []
@@ -95,18 +110,16 @@ def graphBySeason(arr, startMonth, startYear, endMonth, endYear, hemi):
     for i in range(2):
         for j in range(2):
             ax[i][j].set(ylabel = 'temp anomaly')
-            #YYYY/m formatting
-            ax[i][j].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+            #YYYY formatting
+            ax[i][j].xaxis.set_major_formatter(mdates.ConciseDateFormatter(tick.AutoLocator()))
             #set ticks for xaxis
-            ax[i][j].xaxis.set_major_locator(mdates.MonthLocator(1,7))
+            ax[i][j].xaxis.set_major_locator(mdates.YearLocator())
             ax[i][j].xaxis.set_minor_locator(mdates.MonthLocator())
         #rotation of labels
             for label in ax[i][j].get_xticklabels(which = 'major'):
                 label.set(rotation=45, horizontalalignment='right')
 
     plt.show()
-    # print(yfall)
-    # print(xfall)
 
 def fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi):
     i = findInterval(arr, startMonth, startYear, endMonth, endYear)
@@ -120,9 +133,6 @@ def fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi):
     for i in range(3) : returns.insert(-1,float(format(s.quantiles(cData, n=4)[i-1], '.3f')))
     return returns
 
-    # print(returns)
-
-
 def boxPlot(arr, startMonth, startYear, endMonth, endYear, hemi):
     fns = fiveNumberSum(arr, startMonth, startYear, endMonth, endYear, hemi)
     box = plt.figure()
@@ -130,5 +140,93 @@ def boxPlot(arr, startMonth, startYear, endMonth, endYear, hemi):
     p = ax.boxplot(fns)
     plt.show()
 
+#Tkinter
 
-graphBySeason(tropoArr,1,1980,6,1990,2)
+#init the GUI
+root = tk.Tk()
+root.title("Fuckin Retard")
+root.geometry( "1050x200" )
+
+#define dropdown menu values
+Months = ["select Month", "January", "February", "March", "April", "May", "June",
+                   "July", "August", "September", "October", "November", "December"]
+
+Years = ["Select Year", 1978, 1979,
+              1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989,
+              1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
+              2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+              2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+              2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019,
+              2020, 2021]
+
+anomaly_Type = ["Select Anomaly", "Global Average", "Northern Hemisphere",
+                "Southern Hemisphere", "Global Land", "Global Ocean"]
+
+altitude = ["Select Region", "Troposphere","Stratosphere"]
+
+chart_Type = ["Select Graph Type", "Scatter Plot", "Box and Whisker"]
+
+#method for running code once user inputs variables
+def runShit():
+    #exception handling
+    if sStart_Month.current() == 0 and sStart_Year.current() == 0 and sEnd_Year.current() == 0 and \
+            sEnd_Month.current() == 0 and sAnomaly.current() == 0 and sAlti.current() == 0 and sChart.current() == 0:
+        print("Wow you must be a special kind of idiot, you actually managed to --somehow-- leave every field blank")
+    elif sStart_Month.current() == 0 or sStart_Year.current() == 0 or sEnd_Year.current() == 0 or \
+            sEnd_Month.current() == 0 or sAnomaly.current() == 0 or sAlti.current() == 0 or sChart.current() == 0:
+        print("You dun goofed up mufuker, you left a field blank")
+    else:
+        #decision tree --
+        #determine which chart user wants
+            #determine which array to read
+        if sChart.current() == 1:
+            if sAlti.current() == 1:
+                graphBySeason(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current()+1))
+            else:
+                graphBySeason(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current()+1))
+        elif sChart.current() == 2:
+            if sAlti.current() == 1:
+                boxPlot(tropoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current() + 1))
+            else:
+                boxPlot(stratoArr, sStart_Month.current(), int(sStart_Year.get()), sEnd_Month.current(), int(sEnd_Year.get()), (sAnomaly.current() + 1))
+        else:
+            print("something got fucked, shouldn't have made it this far")
+
+#create a run button
+run = tk.Button(root, command = runShit, width = 15, activeforeground= "green", activebackground= "green", text = "RUN")
+run.pack()
+
+#make the dropdown menus
+sStart_Month = ttk.Combobox(root, value = Months)
+sStart_Month.current(0)
+sStart_Month.pack(padx=5, pady=10, side=tk.LEFT)
+
+sStart_Year = ttk.Combobox(root,value = Years)
+sStart_Year.current(0)
+sStart_Year.pack(padx=5, pady=10, side=tk.LEFT)
+
+sEnd_Month = ttk.Combobox(root,value = Months)
+sEnd_Month.current(0)
+sEnd_Month.pack(padx=5, pady=10, side=tk.LEFT)
+
+sEnd_Year = ttk.Combobox(root,value = Years)
+sEnd_Year.current(0)
+sEnd_Year.pack(padx=5, pady=10, side=tk.LEFT)
+
+sAnomaly = ttk.Combobox(root,value = anomaly_Type)
+sAnomaly.current(0)
+sAnomaly.pack(padx=5, pady=10, side=tk.LEFT)
+
+sAlti = ttk.Combobox(root, value = altitude)
+sAlti.current(0)
+sAlti.pack(padx=5, pady=10, side=tk.LEFT)
+
+sChart = ttk.Combobox(root, value = chart_Type)
+sChart.current(0)
+sChart.pack(padx=5, pady=10, side=tk.LEFT)
+
+root.mainloop()
+
+# graphBySeason(tropoArr,11,1978,12,2021,2)
+#One problem is that our database starts at 11.1978, not 1.1978, so we have to fix the GUI to not allow you to choose 1-10.1978
+#Another issue is that we aren't calling the function graphBySeason() properly when we are calling the anomaly "Global Average."
